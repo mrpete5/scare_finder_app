@@ -24,8 +24,7 @@ Scare Finder is a web application that helps users discover horror movies availa
     `TMDB_API_KEY=<your_tmdb_api_key>`
 
     `OMDB_API_KEY=<your_omdb_api_key>`
-7. Initialize the SQLite database by running `python init_db.py`.
-8. Start the web app with `flask run` and open [http://127.0.0.1:5000](http://127.0.0.1:5000) in your browser.
+7. Start the web app with `flask run` and open [http://127.0.0.1:5000](http://127.0.0.1:5000) in your browser.
 
 ## Features
 
