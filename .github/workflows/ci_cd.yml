@@ -40,17 +40,20 @@ jobs:
     - name: Install Heroku CLI
       run: curl https://cli-assets.heroku.com/install.sh | sh
 
-    - name: Login to Heroku Container Registry
+    - name: Heroku Container Login
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
       run: |
-        echo -n $HEROKU_API_KEY | docker login --username=$HEROKU_EMAIL --password-stdin registry.heroku.com
+        echo $HEROKU_API_KEY | heroku container:login
 
-    - name: Set Heroku Remote
-      run: git remote add heroku https://git.heroku.com/scare-finder.git
-
-    - name: Force Push to Heroku
+    - name: Build and Push to Heroku Container
       env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-      run: git push heroku dev:main --force
+        HEROKU_APP_NAME: scare-finder
+      run: |
+        heroku container:push web --app $HEROKU_APP_NAME
+
+    - name: Release Container
+      env:
+        HEROKU_APP_NAME: scare-finder
+      run: |
+        heroku container:release web --app $HEROKU_APP_NAME
