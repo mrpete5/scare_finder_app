@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scare Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #333;
+            color: #fff;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        header h1 a {
+            text-decoration: none;
+            color: #fff;
+        }
+        header h1 a:hover {
+            text-decoration: underline;
+        }
+        header .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        header select {
+            padding: 8px 12px;
+            font-size: 1em;
+            border: none;
+            border-radius: 4px;
+            background-color: #555;
+            color: #fff;
+            cursor: pointer;
+        }
+        header select:hover {
+            background-color: #444;
+        }
+        header button {
+            padding: 8px 12px;
+            font-size: 1em;
+            border: none;
+            border-radius: 4px;
+            background-color: #007BFF;
+            color: #fff;
+            cursor: pointer;
+        }
+        header button:hover {
+            background-color: #0056b3;
+        }
+        .movies-container {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 20px;
+            padding: 20px;
+            margin: 0 auto;
+            max-width: 1200px;
+        }
+        .movie-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            text-align: center;
+            padding: 10px;
+        }
+        .movie-card img {
+            width: 100%;
+            border-bottom: 1px solid #ddd;
+        }
+        .movie-card h2 {
+            font-size: 1em; /* Reduced font size */
+            margin: 10px 0 5px;
+            color: #222;
+        }
+        .movie-card p {
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+        .genres {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .imdb-rating {
+            font-size: 0.95em;
+            font-weight: bold;
+            color: #444;
+            margin-bottom: 10px;
+        }
+        .provider-logos {
+            margin-top: 10px;
+        }
+        .provider-logos img {
+            width: 45px;
+            height: auto;
+            margin: 0 3px;
+        }
+        .selected-provider {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.5em; /* Larger font size */
+            font-weight: bold; /* Bold text */
+            color: #222;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1><a href="/">Scare Finder</a></h1>
+        <div class="header-actions">
+            <form action="/" method="get" style="margin: 0;">
+                <select name="provider" onchange="this.form.submit()">
+                    <option value="">Filter by Provider</option>
+                    <option value="Netflix" {% if selected_provider == "Netflix" %}selected{% endif %}>Netflix</option>
+                    <option value="Hulu" {% if selected_provider == "Hulu" %}selected{% endif %}>Hulu</option>
+                    <option value="Amazon Prime Video" {% if selected_provider == "Amazon Prime Video" %}selected{% endif %}>Amazon Prime Video</option>
+                    <option value="Disney Plus" {% if selected_provider == "Disney Plus" %}selected{% endif %}>Disney Plus</option>
+                    <option value="MUBI" {% if selected_provider == "MUBI" %}selected{% endif %}>MUBI</option>
+                    <option value="Max" {% if selected_provider == "Max" %}selected{% endif %}>Max</option>
+                    <option value="Paramount Plus" {% if selected_provider == "Paramount Plus" %}selected{% endif %}>Paramount Plus</option>
+                    <option value="Peacock Premium" {% if selected_provider == "Peacock Premium" %}selected{% endif %}>Peacock Premium</option>
+                    <option value="Shudder" {% if selected_provider == "Shudder" %}selected{% endif %}>Shudder</option>
+                    <option value="Starz" {% if selected_provider == "Starz" %}selected{% endif %}>Starz</option>
+                </select>                
+            </form>
+            <form action="/update" method="get">
+                <button type="submit">Update Database</button>
+            </form>
+        </div>
+    </header>
+
+    {% if selected_provider %}
+    <div class="selected-provider">
+        {{ selected_provider }}
+    </div>
+    {% endif %}
+
+    <div class="movies-container">
+        {% for movie in movies %}
+        <div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w200{{ movie.poster_url }}" alt="{{ movie.title }}">
+            <h2>{{ movie.title }} ({{ movie.release_date[:4] }})</h2>
+            <p class="genres">{{ movie.genres | join(", ") }}</p>
+            <p class="imdb-rating">
+                IMDb Rating: 
+                {% if movie.imdb_rating is not none %}
+                    {{ "%.1f" | format(movie.imdb_rating) }}/10
+                {% else %}
+                    None
+                {% endif %}
+            </p>
+            <div class="provider-logos">
+                {% for provider in movie.providers %}
+                    <img src="{{ provider['logo_url'] }}" alt="{{ provider['name'] }}" title="{{ provider['name'] }}">
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
