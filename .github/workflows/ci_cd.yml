@@ -47,3 +47,58 @@ jobs:
       run: |
         heroku git:remote -a scare-finder
         git push heroku dev:main --force
+name: Python CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - dev
+  pull_request:
+    branches:
+      - dev
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.12"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pipreqs
+        pip install -r requirements.txt
+
+    - name: Run tests
+      run: python -m unittest discover -s src/tests
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install Heroku CLI
+      run: curl https://cli-assets.heroku.com/install.sh | sh
+
+    - name: Set up Heroku Git Remote
+      run: heroku git:remote -a scare-finder
+
+    - name: Deploy to Heroku
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+      run: |
+        git config --global user.email "$HEROKU_EMAIL"
+        git config --global user.name "GitHub Actions"
+        echo -n $HEROKU_API_KEY | docker login --username=$HEROKU_EMAIL --password-stdin registry.heroku.com
+        git push heroku dev:main --force
