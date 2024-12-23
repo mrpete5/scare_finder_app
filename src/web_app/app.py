@@ -82,7 +82,6 @@ def fetch_movies_from_db(selected_provider=None):
     return movies
 
 
-
 @main.route('/')
 def index():
     """Render the homepage with movies fetched from the database."""
@@ -105,4 +104,6 @@ app.register_blueprint(main)
 init_db(app)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Heroku requires binding to $PORT
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
