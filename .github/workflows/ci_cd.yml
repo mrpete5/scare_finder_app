@@ -45,5 +45,5 @@ jobs:
       env:
         HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       run: |
-        heroku git:remote -a <your-heroku-app-name>
-        git push heroku dev:main -f
+        heroku git:remote -a scare-finder
+        git push heroku dev:main --force
