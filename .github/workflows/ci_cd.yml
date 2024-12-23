@@ -1,4 +1,4 @@
-name: Python CI
+name: Python CI/CD Pipeline
 
 on:
   push:
@@ -29,3 +29,21 @@ jobs:
 
     - name: Run tests
       run: python -m unittest discover -s src/tests
+
+  deploy:
+    needs: test  # Ensures deployment only runs if tests pass
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install Heroku CLI
+      run: curl https://cli-assets.heroku.com/install.sh | sh
+
+    - name: Deploy to Heroku
+      env:
+        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+      run: |
+        heroku git:remote -a <your-heroku-app-name>
+        git push heroku dev:main -f
