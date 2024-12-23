@@ -97,10 +97,9 @@ def save_movie_to_db(movie_data, omdb_data=None, update_type="full"):
     print(f"Processed movie: {movie_data['title']} (TMDb ID: {movie_data['id']})")
 
 
-def process_movies(update_type="full"):
+def process_movies(update_type="full", pages=20):
     """Processes movies, either fully or partially updating."""
-    pages = 40  # Fetch pages of popular movies
-    for page in range(1, pages+1):
+    for page in range(1, pages+1):  # Fetch pages of popular movies
         popular_movies = fetch_popular_movies(page)
         if popular_movies:
             for movie in popular_movies['results']:
