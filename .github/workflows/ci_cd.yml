@@ -1,4 +1,4 @@
-name: Python CI/CD Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
@@ -42,7 +42,7 @@ jobs:
       run: curl https://cli-assets.heroku.com/install.sh | sh
 
     - name: Set up Heroku Git Remote
-      run: heroku git:remote -a scare-finder
+      run: git remote add heroku https://git.heroku.com/scare-finder.git
 
     - name: Deploy to Heroku
       env:
